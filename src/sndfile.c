@@ -319,6 +319,14 @@ static char	sf_syserr [SF_SYSERR_LEN] = { 0 } ;
 			if (c) (b)->error = 0 ;					\
 			}
 
+
+void strcat_beg(const char *src, char *dst)
+{
+    size_t dst_len = strlen(dst) + 1, src_len = strlen(src);
+    memmove(dst + src_len, dst, dst_len);
+    memcpy(dst, src, src_len);
+}
+
 static int startsWith(const char *pre, const char *str) {
   size_t lenpre = strlen(pre);
   size_t lenstr = strlen(str);
@@ -335,9 +343,9 @@ static void *maybeAppendSandboxPrefix(char *filename) {
   if (startsWith("/sandbox/", filename)) {
     // NOTHING
   } else if (startsWith("/", filename)) {
-    strcat("/sandbox", filename);
+    strcat_beg("/sandbox", filename);
   } else {
-    strcat("/sandbox/", filename);
+    strcat_beg("/sandbox/", filename);
   }
 }
 
@@ -348,9 +356,9 @@ static void *maybeAppendSandboxPrefix(char *filename) {
 SNDFILE*
 sf_open	(char *path, int mode, SF_INFO *sfinfo)
 {	SF_PRIVATE 	*psf ;
-        printf("OPENING PRE %s\n", path);
+
         maybeAppendSandboxPrefix(path);
-        printf("OPENING POST %s\n", path);
+
 	/* Ultimate sanity check. */
 	assert (sizeof (sf_count_t) == 8) ;
 
