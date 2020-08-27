@@ -319,14 +319,38 @@ static char	sf_syserr [SF_SYSERR_LEN] = { 0 } ;
 			if (c) (b)->error = 0 ;					\
 			}
 
+static int startsWith(const char *pre, const char *str) {
+  size_t lenpre = strlen(pre);
+  size_t lenstr = strlen(str);
+  if (lenstr < lenpre) {
+    return 0;
+  } else if (memcmp(pre, str, lenpre) == 0) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+static void *maybeAppendSandboxPrefix(char *filename) {
+  if (startsWith("/sandbox/", filename)) {
+    // NOTHING
+  } else if (startsWith("/", filename)) {
+    strcat("/sandbox", filename);
+  } else {
+    strcat("/sandbox/", filename);
+  }
+}
+
 /*------------------------------------------------------------------------------
 **	Public functions.
 */
 
 SNDFILE*
-sf_open	(const char *path, int mode, SF_INFO *sfinfo)
+sf_open	(char *path, int mode, SF_INFO *sfinfo)
 {	SF_PRIVATE 	*psf ;
-
+        printf("OPENING PRE %s\n", path);
+        maybeAppendSandboxPrefix(path);
+        printf("OPENING POST %s\n", path);
 	/* Ultimate sanity check. */
 	assert (sizeof (sf_count_t) == 8) ;
 

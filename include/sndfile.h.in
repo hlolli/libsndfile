@@ -576,7 +576,7 @@ typedef	struct SF_VIRTUAL_IO SF_VIRTUAL_IO ;
 ** All calls to sf_open() should be matched with a call to sf_close().
 */
 
-SNDFILE* 	sf_open		(const char *path, int mode, SF_INFO *sfinfo) ;
+SNDFILE* 	sf_open		(char *path, int mode, SF_INFO *sfinfo) ;
 
 
 /* Use the existing file descriptor to create a SNDFILE object. If close_desc
